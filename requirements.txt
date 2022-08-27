@@ -1,0 +1,4 @@
+numpy~=1.23.2
+keras~=2.9.0
+nltk~=3.7
+PyYAML~=6.0
