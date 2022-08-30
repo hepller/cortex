@@ -90,16 +90,17 @@ def encode_output(sequences: ndarray, vocab_size: int) -> ndarray:
 	return y
 
 
-def define_model(vocab: int, timesteps: int, n_units: int) -> Sequential:
+def define_model(name: str, vocab: int, timesteps: int, n_units: int) -> Sequential:
 	""" Определяет NMT модель нейросети.
 
+	:param name: Имя модели.
 	:param vocab: Размер запаса слов.
 	:param timesteps: Кол-во повторений.
 	:param n_units: N-юниты.
-	:return: LTSM RNN модель нейросети.
+	:return: Модель нейросети.
 	"""
 
-	model: Sequential = Sequential()
+	model: Sequential = Sequential(name=name)
 
 	model.add(Embedding(vocab, n_units, input_length=timesteps, mask_zero=True))
 	model.add(LSTM(n_units))
@@ -135,10 +136,11 @@ def train_model(model: Sequential, train: tuple[ndarray, ndarray], test: tuple[n
 	model.save(model_path)
 
 
-def run_training(model_dir_path: str, epochs_count: int, batch_size: int) -> None:
+def run_training(model_dir_path: str, model_name: str, epochs_count: int, batch_size: int) -> None:
 	""" Запускает обучение модели для нейросети.
 
 	:param model_dir_path: Путь к директории модели.
+	:param model_name: Имя модели.
 	:param epochs_count: Количество эпох.
 	:param batch_size: Размер партии примеров (для обновления весов).
 	"""
@@ -149,25 +151,25 @@ def run_training(model_dir_path: str, epochs_count: int, batch_size: int) -> Non
 	test: ndarray = load_data_dump(f"{model_dir_path}/test.pkl")
 
 	# Подготовка токенизатора.
-	all_tokenizer: Tokenizer = create_tokenizer(dataset[:, 0])
-	all_vocab_size: int = len(all_tokenizer.word_index) + 1
-	all_length: int = max_length(dataset[:, 0])
+	tokenizer: Tokenizer = create_tokenizer(dataset[:, 0])
+	vocabulary_size: int = len(tokenizer.word_index) + 1
+	length: int = max_length(dataset[:, 0])
 
-	print(f"ALL Vocabulary Size: {all_vocab_size}")
-	print(f"ALL Max question length: {all_length}")
+	print(f"Vocabulary Size: {vocabulary_size}")
+	print(f"Max question length: {length}")
 
 	# Подготовка данных для обучения.
-	train_x: ndarray = encode_sequences(all_tokenizer, all_length, train[:, 0])
-	train_y: ndarray = encode_sequences(all_tokenizer, all_length, train[:, 1])
-	train_y: ndarray = encode_output(train_y, all_vocab_size)
+	train_x: ndarray = encode_sequences(tokenizer, length, train[:, 0])
+	train_y: ndarray = encode_sequences(tokenizer, length, train[:, 1])
+	train_y: ndarray = encode_output(train_y, vocabulary_size)
 
 	# Подготовка данных для валидации.
-	test_x: ndarray = encode_sequences(all_tokenizer, all_length, test[:, 0])
-	test_y: ndarray = encode_sequences(all_tokenizer, all_length, test[:, 1])
-	test_y: ndarray = encode_output(test_y, all_vocab_size)
+	test_x: ndarray = encode_sequences(tokenizer, length, test[:, 0])
+	test_y: ndarray = encode_sequences(tokenizer, length, test[:, 1])
+	test_y: ndarray = encode_output(test_y, vocabulary_size)
 
 	# Определение модели.
-	model: Sequential = define_model(all_vocab_size, all_length, 256)
+	model: Sequential = define_model(vocabulary_size, length, 256)
 
 	# Обучение модели.
 	train_model(model, (train_x, train_y), (test_x, test_y), epochs_count, batch_size, f"{model_dir_path}/model.h5")
@@ -176,4 +178,9 @@ def run_training(model_dir_path: str, epochs_count: int, batch_size: int) -> Non
 if __name__ == "__main__":
 	config = Config("../config.yml")
 
-	run_training("../model", config.get_epochs_count(), config.get_batch_size())
+	print("Running model training ...")
+	print(f"- Dataset size: {config.get_dataset_size()}")
+	print(f"- Epochs count: {config.get_epochs_count()}")
+	print(f"- Batch size: {config.get_batch_size()}")
+
+	run_training("../model", "Cortex-A", config.get_epochs_count(), config.get_batch_size())

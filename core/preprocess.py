@@ -98,8 +98,9 @@ def preprocess_dataset(model_dir_path: str, dataset_path: str, dataset_size: int
 
 
 if __name__ == "__main__":
-	print("Run dataset preprocess ...")
-
 	config = Config("../config.yml")
+
+	print(f"Running dataset preprocessing ...")
+	print(f"- Dataset size: {config.get_dataset_size()}")
 
 	preprocess_dataset("../model", "../data/data.json", config.get_dataset_size())

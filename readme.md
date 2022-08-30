@@ -1,4 +1,4 @@
-# Cortex ᵇᵉᵗᵃ ![Release](https://img.shields.io/github/v/release/hepller/cortex)
+# Cortex ᵃˡᵖʰᵃ ![Release](https://img.shields.io/github/v/release/hepller/cortex)
 
 > RNN LTSM нейросеть для имитации общения
 
