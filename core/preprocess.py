@@ -1,5 +1,6 @@
 """ Подготовка данных для обучения.
 """
+
 import json
 import os
 from pickle import dump
@@ -11,10 +12,10 @@ from utils.default_config import get_dataset_size
 
 
 def load_dataset(path: str) -> ndarray:
-	""" Загружает датасет из JSON-файла в массив ndarray.
+	""" Загружает датасет из JSON-файла в N-мерный массив.
 
 	:param path: Путь к датасету.
-	:return: Датасет в виде ndarray.
+	:return: Датасет в виде N-мерного массива.
 	"""
 
 	with open(path, "rb") as json_file:
@@ -30,7 +31,7 @@ def load_dataset(path: str) -> ndarray:
 def save_data_dump(data: ndarray, filename: str) -> None:
 	""" Сохраняет данные в pkl-файлы (дамп).
 
-	:param data: Данные (в виде ndarray) для сохранения.
+	:param data: Данные (в виде N-мерного массива) для сохранения.
 	:param filename: Имя файла.
 	"""
 
@@ -39,15 +40,14 @@ def save_data_dump(data: ndarray, filename: str) -> None:
 	print("Saved: %s" % filename)
 
 
-def save_data(dataset: ndarray, train: ndarray, test: ndarray) -> None:
+def save_data(model_path: str, dataset: ndarray, train: ndarray, test: ndarray) -> None:
 	""" Сохраняет данные в pkl-файлы.
 
+	:param model_path: Путь к директории модели.
 	:param dataset: Датасет.
 	:param train: Данные обучения.
 	:param test: Тестовые данные.
 	"""
-
-	model_path: str = "../model"
 
 	if not os.path.exists(model_path):
 		print("Creating a model directory ...")
@@ -64,7 +64,7 @@ def save_data(dataset: ndarray, train: ndarray, test: ndarray) -> None:
 def reformat_dataset(data: ndarray, dataset_size: int) -> ndarray:
 	""" Форматирует и перемешивает данные из датасета.
 
-	:param data: Датасет (в виде ndarray массива)
+	:param data: Датасет (в виде N-мерного массива)
 	:param dataset_size: Размер датасета.
 	:return: Обрезанный до указанного размера датасет с перемешанными данными.
 	"""
@@ -78,9 +78,10 @@ def reformat_dataset(data: ndarray, dataset_size: int) -> ndarray:
 	return reduced_dataset
 
 
-def preprocess_dataset(dataset_path: str, dataset_size: int) -> None:
+def preprocess_dataset(model_dir_path: str, dataset_path: str, dataset_size: int) -> None:
 	""" Подготавливает данные из датасета для обучения.
 
+	:param model_dir_path: Путь к директории модели.
 	:param dataset_path: Путь к датасету.
 	:param dataset_size: Размер датасета (после обрезания).
 	"""
@@ -93,10 +94,10 @@ def preprocess_dataset(dataset_path: str, dataset_size: int) -> None:
 	train, test = reformatted_dataset[:dataset_size], reformatted_dataset[dataset_size:]
 
 	# Сохранение данных в pkl-файлы
-	save_data(reformatted_dataset, train, test)
+	save_data(model_dir_path, reformatted_dataset, train, test)
 
 
 if __name__ == "__main__":
 	print("Run dataset preprocess ...")
 
-	preprocess_dataset("../data/data.json", get_dataset_size())
+	preprocess_dataset("../model", "../data/data.json", get_dataset_size())

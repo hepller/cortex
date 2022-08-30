@@ -1,3 +1,6 @@
+""" Обучение модели для нейросети.
+"""
+
 from pickle import load
 
 from keras.layers import Dense
@@ -8,89 +11,167 @@ from keras.layers import TimeDistributed
 from keras.models import Sequential
 from keras.preprocessing.text import Tokenizer
 from keras.utils import to_categorical
+from keras.utils.layer_utils import print_summary
 from keras_preprocessing.sequence import pad_sequences
-from numpy import array
+from numpy import array, ndarray
+
+from utils.default_config import get_epochs_count, get_batch_size
 
 
-# load a clean dataset
-def load_clean_sentences(filename):
-	return load(open(filename, 'rb'))
+def load_data_dump(filename: str) -> ndarray:
+	""" Загружает данные из pkl-файла (дампа).
+
+	:param filename: Имя pkl-файла
+	:return: Данные из дампа.
+	"""
+
+	return load(open(filename, "rb"))
 
 
-# fit a tokenizer
-def create_tokenizer(lines):
-	tokenizer = Tokenizer()
+def create_tokenizer(lines: ndarray) -> Tokenizer:
+	""" Создает токенизатор на основе текста.
+
+	:param lines: Строки текст для создания словаря.
+	:return: Токенизатор со словарем из указанного текста.
+	"""
+
+	tokenizer: Tokenizer = Tokenizer()
 	tokenizer.fit_on_texts(lines)
+
 	return tokenizer
 
 
-# max sentence length
-def max_length(lines):
+def max_length(lines: ndarray) -> int:
+	""" Получает максимальную длину строки среди линий текста.
+
+	:param lines: Список текста.
+	:return: Максимальная длина строки.
+	"""
+
 	return max(len(line.split()) for line in lines)
 
 
-# encode and pad sequences
-def encode_sequences(tokenizer, length, lines):
-	# intereply encode sequences
-	X = tokenizer.texts_to_sequences(lines)
-	# pad sequences with 0 values
-	X = pad_sequences(X, maxlen=length, padding='post')
-	return X
+def encode_sequences(tokenizer: Tokenizer, length: int, lines: ndarray) -> ndarray:
+	""" Кодирует и заполняет последовательности.
+
+	:param tokenizer: Токенизатор.
+	:param length: Максимальная длина строки.
+	:param lines: N-мерный массив строк.
+	:return: Закодированный и заполненный N-мерный массив.
+	"""
+
+	# Кодирование последовательностей.
+	x: list = tokenizer.texts_to_sequences(lines)
+
+	# Заполнение последовательностей с нулевым значением.
+	x: ndarray = pad_sequences(x, maxlen=length, padding="post")
+
+	return x
 
 
-# one hot encode target sequence
-def encode_output(sequences, vocab_size):
-	ylist = list()
+def encode_output(sequences: ndarray, vocab_size: int) -> ndarray:
+	""" Кодирует целевые данные.
+
+	:param sequences: N-мерный массив целевых данных.
+	:param vocab_size: Максимальный размер запаса слов.
+	:return: Закодированный N-мерный массив целевых данных.
+	"""
+
+	y_list: list = list()
+
 	for sequence in sequences:
 		encoded = to_categorical(sequence, num_classes=vocab_size)
-		ylist.append(encoded)
-	y = array(ylist)
-	y = y.reshape(sequences.shape[0], sequences.shape[1], vocab_size)
+
+		y_list.append(encoded)
+
+	# Создание N-мерного массива и его решейп.
+	y: ndarray = array(y_list).reshape((sequences.shape[0], sequences.shape[1], vocab_size))
+
 	return y
 
 
-# define NMT model
-def define_model(vocab, timesteps, n_units):
-	model = Sequential()
+def define_model(vocab: int, timesteps: int, n_units: int) -> Sequential:
+	""" Определяет NMT модель нейросети.
+
+	:param vocab: Размер запаса слов.
+	:param timesteps: Кол-во повторений.
+	:param n_units: N-юниты.
+	:return: LTSM RNN модель нейросети.
+	"""
+
+	model: Sequential = Sequential()
+
 	model.add(Embedding(vocab, n_units, input_length=timesteps, mask_zero=True))
 	model.add(LSTM(n_units))
 	model.add(RepeatVector(timesteps))
 	model.add(LSTM(n_units, return_sequences=True))
-	model.add(TimeDistributed(Dense(vocab, activation='softmax')))
+	model.add(TimeDistributed(Dense(vocab, activation="softmax")))
+
 	return model
 
 
-# load datasets
-dataset = load_clean_sentences('../model/both.pkl')
-dataset1 = dataset.reshape(-1, 1)
-train = load_clean_sentences('../model/train.pkl')
-test = load_clean_sentences('../model/test.pkl')
+def train_model(model: Sequential, train: tuple[ndarray, ndarray], test: tuple[ndarray, ndarray], epochs_count: int, batch_size: int, model_path: str) -> None:
+	""" Компилирует, обучает и сохраняет модель.
 
-# prepare tokenizer
-all_tokenizer = create_tokenizer(dataset1[:, 0])
-all_vocab_size = len(all_tokenizer.word_index) + 1
-all_length = max_length(dataset1[:, 0])
-print('ALL Vocabulary Size: %d' % (all_vocab_size))
-print('ALL Max question length: %d' % (all_length))
+	:param model: Модель.
+	:param train: Кортеж из N-мерных массивов данных для обучения (train_x, train_y).
+	:param test: Кортеж из N-мерных массивов данных для валидации (test_x, test_y).
+	:param epochs_count: Количество эпох.
+	:param batch_size: Размер партии примеров (для обновления весов).
+	:param model_path: Путь к модели.
+	"""
 
-# prepare training data
-trainX = encode_sequences(all_tokenizer, all_length, train[:, 0])
-trainY = encode_sequences(all_tokenizer, all_length, train[:, 1])
-trainY = encode_output(trainY, all_vocab_size)
+	# Компиляции модели.
+	model.compile(optimizer="adam", loss="categorical_crossentropy")
 
-# prepare validation data
-testX = encode_sequences(all_tokenizer, all_length, test[:, 0])
-testY = encode_sequences(all_tokenizer, all_length, test[:, 1])
-testY = encode_output(testY, all_vocab_size)
+	print_summary(model)
 
-# define model
-model = define_model(all_vocab_size, all_length, 256)
-model.compile(optimizer='adam', loss='categorical_crossentropy')
+	# Получаение данных для обучения и данных для валидации из кортежей.
+	train_x, train_y = train
+	test_x, test_y = test
 
-# summarize defined model
-print(model.summary())
+	# Обучение и сохранение модели.
+	model.fit(train_x, train_y, epochs=epochs_count, batch_size=batch_size, validation_data=(test_x, test_y), verbose=1)
+	model.save(model_path)
 
-# train and save model
-model.fit(trainX, trainY, epochs=100, batch_size=64, validation_data=(testX, testY), verbose=1)
-filename = '../model/model.h5'
-model.save(filename)
+
+def run_training(model_dir_path: str, epochs_count: int, batch_size: int) -> None:
+	""" Запускает обучение модели для нейросети.
+
+	:param model_dir_path: Путь к директории модели.
+	:param epochs_count: Количество эпох.
+	:param batch_size: Размер партии примеров (для обновления весов).
+	"""
+
+	# Загрузка данных.
+	dataset: ndarray = load_data_dump(f"{model_dir_path}/both.pkl").reshape(-1, 1)
+	train: ndarray = load_data_dump(f"{model_dir_path}/train.pkl")
+	test: ndarray = load_data_dump(f"{model_dir_path}/test.pkl")
+
+	# Подготовка токенизатора.
+	all_tokenizer: Tokenizer = create_tokenizer(dataset[:, 0])
+	all_vocab_size: int = len(all_tokenizer.word_index) + 1
+	all_length: int = max_length(dataset[:, 0])
+
+	print(f"ALL Vocabulary Size: {all_vocab_size}")
+	print(f"ALL Max question length: {all_length}")
+
+	# Подготовка данных для обучения.
+	train_x: ndarray = encode_sequences(all_tokenizer, all_length, train[:, 0])
+	train_y: ndarray = encode_sequences(all_tokenizer, all_length, train[:, 1])
+	train_y: ndarray = encode_output(train_y, all_vocab_size)
+
+	# Подготовка данных для валидации.
+	test_x: ndarray = encode_sequences(all_tokenizer, all_length, test[:, 0])
+	test_y: ndarray = encode_sequences(all_tokenizer, all_length, test[:, 1])
+	test_y: ndarray = encode_output(test_y, all_vocab_size)
+
+	# Определение модели.
+	model: Sequential = define_model(all_vocab_size, all_length, 256)
+
+	# Обучение модели.
+	train_model(model, (train_x, train_y), (test_x, test_y), epochs_count, batch_size, f"{model_dir_path}/model.h5")
+
+
+if __name__ == "__main__":
+	run_training("../model", get_epochs_count(), get_batch_size())
