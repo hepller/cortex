@@ -9,7 +9,7 @@
 
 _Cortex_ — Простая нейросеть для имитации диалога по принципу Вопрос/Ответ
 
-> Написано на Python с использованием библиотек [Keras](https://keras.io/) ([TensorFlow](https://www.tensorflow.org/) backend), [NLTK](https://www.nltk.org/) и [NumPy](https://numpy.org/)
+> Написано на Python с использованием библиотек [Keras](https://keras.io/) (+ [TensorFlow](https://www.tensorflow.org/)), [NLTK](https://www.nltk.org/) и [NumPy](https://numpy.org/)
 
 _Сделано на основе https://github.com/bartosz-paternoga/Chatbot_
 
@@ -23,9 +23,9 @@ _Дополнительные зависимости указаны в [`require
 
 ### Подготовка датасета
 
-Перед запуском необходимо подготовить датасет (`data.json`) по которому будет обучаться модель
+Перед запуском необходимо подготовить датасет `data.json` (нужно добавить этот файл в директорию) по которому будет обучаться модель
 
-Пример датасета:
+Пример элементов датасета:
 
 ```json5
 [
@@ -36,7 +36,7 @@ _Дополнительные зависимости указаны в [`require
   {
     "question": "Кто",
     "answer": "Я"
-  }
+  },
   
   // ...
 ]

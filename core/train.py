@@ -14,45 +14,51 @@ from numpy import array
 
 # load a clean dataset
 def load_clean_sentences(filename):
-  return load(open(filename, 'rb'))
+	return load(open(filename, 'rb'))
+
 
 # fit a tokenizer
 def create_tokenizer(lines):
-  tokenizer = Tokenizer()
-  tokenizer.fit_on_texts(lines)
-  return tokenizer
+	tokenizer = Tokenizer()
+	tokenizer.fit_on_texts(lines)
+	return tokenizer
+
 
 # max sentence length
 def max_length(lines):
-  return max(len(line.split()) for line in lines)
+	return max(len(line.split()) for line in lines)
+
 
 # encode and pad sequences
 def encode_sequences(tokenizer, length, lines):
-  # intereply encode sequences
-  X = tokenizer.texts_to_sequences(lines)
-  # pad sequences with 0 values
-  X = pad_sequences(X, maxlen=length, padding='post')
-  return X
+	# intereply encode sequences
+	X = tokenizer.texts_to_sequences(lines)
+	# pad sequences with 0 values
+	X = pad_sequences(X, maxlen=length, padding='post')
+	return X
+
 
 # one hot encode target sequence
 def encode_output(sequences, vocab_size):
-  ylist = list()
-  for sequence in sequences:
-    encoded = to_categorical(sequence, num_classes=vocab_size)
-    ylist.append(encoded)
-  y = array(ylist)
-  y = y.reshape(sequences.shape[0], sequences.shape[1], vocab_size)
-  return y
+	ylist = list()
+	for sequence in sequences:
+		encoded = to_categorical(sequence, num_classes=vocab_size)
+		ylist.append(encoded)
+	y = array(ylist)
+	y = y.reshape(sequences.shape[0], sequences.shape[1], vocab_size)
+	return y
+
 
 # define NMT model
 def define_model(vocab, timesteps, n_units):
-  model = Sequential()
-  model.add(Embedding(vocab, n_units, input_length=timesteps, mask_zero=True))
-  model.add(LSTM(n_units))
-  model.add(RepeatVector(timesteps))
-  model.add(LSTM(n_units, return_sequences=True))
-  model.add(TimeDistributed(Dense(vocab, activation='softmax')))
-  return model
+	model = Sequential()
+	model.add(Embedding(vocab, n_units, input_length=timesteps, mask_zero=True))
+	model.add(LSTM(n_units))
+	model.add(RepeatVector(timesteps))
+	model.add(LSTM(n_units, return_sequences=True))
+	model.add(TimeDistributed(Dense(vocab, activation='softmax')))
+	return model
+
 
 # load datasets
 dataset = load_clean_sentences('../model/both.pkl')
@@ -85,6 +91,6 @@ model.compile(optimizer='adam', loss='categorical_crossentropy')
 print(model.summary())
 
 # train and save model
-model.fit(trainX, trainY, epochs=500, batch_size=64, validation_data=(testX, testY), verbose=1)
-filename = 'model/model.h5'
+model.fit(trainX, trainY, epochs=100, batch_size=64, validation_data=(testX, testY), verbose=1)
+filename = '../model/model.h5'
 model.save(filename)
