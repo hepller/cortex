@@ -1,4 +1,4 @@
-""" Утилита для работы с конфигурацией.
+""" Работы с конфигурацией.
 """
 
 import yaml
@@ -11,13 +11,29 @@ class Config:
 	def __init__(self, path: str):
 		self.path = path
 
-	def get_config(self):
-		""" Получает конфигурацию.
+		with open(self.path) as file:
+			self.config = yaml.load(file, Loader=yaml.FullLoader)
 
-		:return: Конфигурация.
+	def get_dataset_size(self) -> int:
+		""" Получает размер датасета.
+
+		:return: Размер датасета.
 		"""
 
-		with open(self.path) as file:
-			config = yaml.load(file, Loader=yaml.FullLoader)
+		return self.config["dataset_size"]
 
-		return config
+	def get_epochs_count(self) -> int:
+		""" Получает кол-во эпох.
+
+		:return: Кол-во эпох.
+		"""
+
+		return self.config["epochs_count"]
+
+	def get_batch_size(self) -> int:
+		""" Получает кол-во эпох.
+
+		:return: Кол-во эпох.
+		"""
+
+		return self.config["batch_size"]

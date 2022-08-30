@@ -15,7 +15,7 @@ from keras.utils.layer_utils import print_summary
 from keras_preprocessing.sequence import pad_sequences
 from numpy import array, ndarray
 
-from utils.default_config import get_epochs_count, get_batch_size
+from utils.config import Config
 
 
 def load_data_dump(filename: str) -> ndarray:
@@ -174,4 +174,6 @@ def run_training(model_dir_path: str, epochs_count: int, batch_size: int) -> Non
 
 
 if __name__ == "__main__":
-	run_training("../model", get_epochs_count(), get_batch_size())
+	config = Config("../config.yml")
+
+	run_training("../model", config.get_epochs_count(), config.get_batch_size())

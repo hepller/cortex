@@ -8,7 +8,7 @@ from pickle import dump
 from numpy import ndarray, array
 from numpy.random import shuffle
 
-from utils.default_config import get_dataset_size
+from utils.config import Config
 
 
 def load_dataset(path: str) -> ndarray:
@@ -87,8 +87,8 @@ def preprocess_dataset(model_dir_path: str, dataset_path: str, dataset_size: int
 	"""
 
 	# Загрузка и обрезание датасета.
-	raw_dataset = load_dataset(dataset_path)
-	reformatted_dataset = reformat_dataset(raw_dataset, dataset_size)
+	raw_dataset: ndarray = load_dataset(dataset_path)
+	reformatted_dataset: ndarray = reformat_dataset(raw_dataset, dataset_size)
 
 	# Разделения реформатированного датасета на train / test.
 	train, test = reformatted_dataset[:dataset_size], reformatted_dataset[dataset_size:]
@@ -100,4 +100,6 @@ def preprocess_dataset(model_dir_path: str, dataset_path: str, dataset_size: int
 if __name__ == "__main__":
 	print("Run dataset preprocess ...")
 
-	preprocess_dataset("../model", "../data/data.json", get_dataset_size())
+	config = Config("../config.yml")
+
+	preprocess_dataset("../model", "../data/data.json", config.get_dataset_size())
