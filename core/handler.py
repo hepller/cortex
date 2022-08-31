@@ -10,6 +10,10 @@ from numpy.compat import long
 
 from core.train import load_data_dump, create_tokenizer, max_length
 
+# Загрузка модели (весов).
+# TODO: Перепис.
+model: Sequential = load_model("../model/model.h5")
+
 
 def word_for_id(integer: long, tokenizer: Tokenizer) -> str | None:
 	""" Сопоставляет целое число со словом и возвращает слово из последовательности.
@@ -36,7 +40,8 @@ def predict_sequence(model: Sequential, tokenizer: Tokenizer, source: ndarray) -
 	"""
 
 	# prediction: ndarray = model.predict(source, verbose=0)[0] # Старый вариант
-	prediction: ndarray = model(source)[0].numpy()
+	# prediction: ndarray = model(source)[0].numpy()
+	prediction: ndarray = model.predict(source, verbose=0)[0]
 	integers: list = [argmax(vector) for vector in prediction]
 	target: list = list()
 
@@ -89,8 +94,8 @@ def handle_text(model_dir_path: str, text: str) -> str:
 	# vocabulary_size: int = len(tokenizer.word_index) + 1
 	length: int = max_length(reshaped_dataset[:, 0])
 
-	# Загрузка модели (весов).
-	model: Sequential = load_model(f"{model_dir_path}/model.h5")
+	# # Загрузка модели (весов).
+	# model: Sequential = load_model(f"{model_dir_path}/model.h5")
 
 	# Обрезка входящего текста.
 	query: list[str] = text.strip().split("\n")

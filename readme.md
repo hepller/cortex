@@ -9,9 +9,7 @@
 
 _Cortex_ — Простая нейросеть для имитации диалога по принципу Вопрос/Ответ с встроенным интерфейсом командной строки (CLI)
 
-> Написано на Python с использованием библиотек [Keras](https://keras.io/) (+ [TensorFlow](https://www.tensorflow.org/)), [NLTK](https://www.nltk.org/) и [NumPy](https://numpy.org/)
-
-_Сделано на основе https://github.com/bartosz-paternoga/Chatbot_
+> Написано на Python с использованием библиотек [Keras](https://keras.io/) (+ [TensorFlow](https://www.tensorflow.org/)), [NLTK](https://www.nltk.org/) и [NumPy](https://numpy.org/) _на основе https://github.com/bartosz-paternoga/Chatbot_
 
 ## Зависимости
 
@@ -50,14 +48,14 @@ _Допустимо наличие элементов с одинаковым н
 
 После подготовки датасета необходимо открыть конфигурацию в файле `config.yml` и установить необходимые вам значения
 
-### Запуск нейросети
+### Обучение нейросети
 
 Для запуска нейросети нужно поочередно ввести команды в терминал:
 
 ```bash
 # Установка зависимостей
 $ pip install -r requirements.txt
-# Для обучения на CPU можно использовать tensorflow-cpu, вместо tensorflow
+# Для обучения на CPU можно использовать tensorflow-cpu, вместо обычного tensorflow
 
 # Переход в директорию ядра
 $ cd core
@@ -67,16 +65,35 @@ $ python preprocess.py
 
 # Обучение модели нейросети
 $ python train.py
+```
+
+### Интерфейсы для взаимодействия
+
+#### CLI
+
+```bash
 
 # Переход в директорию интерфейсов
-$ cd ../interfaces
+$ cd interfaces
 
 # Запуск интерфейса командной строки (CLI)
 $ python cli.py
-
 ```
 
 _Для выхода из CLI введите: `/exit`_
+
+#### API
+
+```bash
+
+# Переход в директорию интерфейсов
+$ cd interfaces
+
+# Запуск интерфейса командной строки (CLI)
+$ python api.py
+```
+
+Запрос к API должен выглядеть так: `http://127.0.0.1:5000/api?query=<текст_запроса>` _(порт, на котором запускается API можно указать в конфигурации)_
 
 ## Дополнительная информация
 

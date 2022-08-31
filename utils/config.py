@@ -33,7 +33,7 @@ class Config:
 		:return: Размер датасета.
 		"""
 
-		return self.config["dataset_size"]
+		return int(self.config["core"]["dataset_size"])
 
 	def get_epochs_count(self) -> int:
 		""" Получает кол-во эпох.
@@ -41,7 +41,7 @@ class Config:
 		:return: Кол-во эпох.
 		"""
 
-		return self.config["epochs_count"]
+		return int(self.config["core"]["epochs_count"])
 
 	def get_batch_size(self) -> int:
 		""" Получает кол-во эпох.
@@ -49,4 +49,20 @@ class Config:
 		:return: Кол-во эпох.
 		"""
 
-		return self.config["batch_size"]
+		return int(self.config["core"]["batch_size"])
+
+	def get_api_host(self):
+		""" Получает хост на котором будет запускаться API.
+
+		:return: Хост на котором будет запускаться API.
+		"""
+
+		return self.config["api"]["host"]
+
+	def get_api_port(self):
+		""" Получает порт на котором будет запускаться API.
+
+		:return: Порт на котором будет запускаться API.
+		"""
+
+		return int(self.config["api"]["port"])

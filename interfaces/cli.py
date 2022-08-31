@@ -1,4 +1,4 @@
-""" Интерфейс командной строки (CLI)
+""" Интерфейс командной строки (CLI).
 """
 
 from core.handler import handle_text
