@@ -56,7 +56,8 @@ _Допустимо наличие элементов с одинаковым н
 
 ```bash
 # Установка зависимостей
-$ pip install -r requirements.txt # Для обучения на CPU можно использовать tensorflow-cpu, вместо tensorflow
+$ pip install -r requirements.txt
+# Для обучения на CPU можно использовать tensorflow-cpu, вместо tensorflow
 
 # Переход в директорию ядра
 $ cd core
@@ -67,8 +68,8 @@ $ python preprocess.py
 # Обучение модели нейросети
 $ python train.py
 
-# Переход в начальную директорию
-$ cd ..
+# Переход в директорию интерфейсов
+$ cd ../interfaces
 
 # Запуск интерфейса командной строки (CLI)
 $ python cli.py

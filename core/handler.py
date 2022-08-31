@@ -9,7 +9,6 @@ from numpy import argmax, ndarray
 from numpy.compat import long
 
 from core.train import load_data_dump, create_tokenizer, max_length
-from utils.config import Config
 
 
 def word_for_id(integer: long, tokenizer: Tokenizer) -> str | None:

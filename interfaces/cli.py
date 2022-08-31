@@ -4,7 +4,7 @@
 from core.handler import handle_text
 
 if __name__ == "__main__":
-	model_dir_path: str = "model"
+	model_dir_path: str = "../model"
 
 	while True:
 		query: str = input(str("> "))
