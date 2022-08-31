@@ -11,7 +11,7 @@ from numpy.random import shuffle
 from utils.config import Config
 
 
-def load_dataset(path: str) -> ndarray:
+def load_json_dataset(path: str) -> ndarray:
 	""" Загружает датасет из JSON-файла в N-мерный массив.
 
 	:param path: Путь к датасету.
@@ -40,7 +40,7 @@ def save_data_dump(data: ndarray, filename: str) -> None:
 	print("Saved: %s" % filename)
 
 
-def save_data(model_path: str, dataset: ndarray, train: ndarray, test: ndarray) -> None:
+def save_pickle_data(model_path: str, dataset: ndarray, train: ndarray, test: ndarray) -> None:
 	""" Сохраняет данные в pkl-файлы.
 
 	:param model_path: Путь к директории модели.
@@ -58,7 +58,7 @@ def save_data(model_path: str, dataset: ndarray, train: ndarray, test: ndarray) 
 	save_data_dump(train, f"{model_path}/train.pkl")
 	save_data_dump(test, f"{model_path}/test.pkl")
 
-	print("All pkl files are saved")
+	print("All pickle files are saved")
 
 
 def reformat_dataset(data: ndarray, dataset_size: int) -> ndarray:
@@ -87,14 +87,14 @@ def preprocess_dataset(model_dir_path: str, dataset_path: str, dataset_size: int
 	"""
 
 	# Загрузка и обрезание датасета.
-	raw_dataset: ndarray = load_dataset(dataset_path)
+	raw_dataset: ndarray = load_json_dataset(dataset_path)
 	reformatted_dataset: ndarray = reformat_dataset(raw_dataset, dataset_size)
 
 	# Разделения реформатированного датасета на train / test.
 	train, test = reformatted_dataset[:dataset_size], reformatted_dataset[dataset_size:]
 
 	# Сохранение данных в pkl-файлы
-	save_data(model_dir_path, reformatted_dataset, train, test)
+	save_pickle_data(model_dir_path, reformatted_dataset, train, test)
 
 
 if __name__ == "__main__":

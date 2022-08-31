@@ -28,14 +28,15 @@ def load_data_dump(filename: str) -> ndarray:
 	return load(open(filename, "rb"))
 
 
-def create_tokenizer(lines: ndarray) -> Tokenizer:
+def create_tokenizer(lines: ndarray, char_level: bool = False) -> Tokenizer:
 	""" Создает токенизатор на основе текста.
 
 	:param lines: Строки текст для создания словаря.
+	:param char_level: Уровень символов (если значение True, то каждый символ будет рассматриваться как токен).
 	:return: Токенизатор со словарем из указанного текста.
 	"""
 
-	tokenizer: Tokenizer = Tokenizer()
+	tokenizer: Tokenizer = Tokenizer(char_level=char_level)
 	tokenizer.fit_on_texts(lines)
 
 	return tokenizer
@@ -90,23 +91,23 @@ def encode_output(sequences: ndarray, vocab_size: int) -> ndarray:
 	return y
 
 
-def define_model(name: str, vocab: int, timesteps: int, n_units: int) -> Sequential:
+def define_model(model_name: str, vocabulary_size: int, timesteps: int, n_units: int) -> Sequential:
 	""" Определяет NMT модель нейросети.
 
-	:param name: Имя модели.
-	:param vocab: Размер запаса слов.
+	:param model_name: Имя модели.
+	:param vocabulary_size: Размер запаса слов.
 	:param timesteps: Кол-во повторений.
 	:param n_units: N-юниты.
 	:return: Модель нейросети.
 	"""
 
-	model: Sequential = Sequential(name=name)
+	model: Sequential = Sequential(name=model_name)
 
-	model.add(Embedding(vocab, n_units, input_length=timesteps, mask_zero=True))
+	model.add(Embedding(vocabulary_size, n_units, input_length=timesteps, mask_zero=True))
 	model.add(LSTM(n_units))
 	model.add(RepeatVector(timesteps))
 	model.add(LSTM(n_units, return_sequences=True))
-	model.add(TimeDistributed(Dense(vocab, activation="softmax")))
+	model.add(TimeDistributed(Dense(vocabulary_size, activation="softmax")))
 
 	return model
 
@@ -122,7 +123,7 @@ def train_model(model: Sequential, train: tuple[ndarray, ndarray], test: tuple[n
 	:param model_path: Путь к модели.
 	"""
 
-	# Компиляции модели.
+	# Подготавливает модель к обучению.
 	model.compile(optimizer="adam", loss="categorical_crossentropy")
 
 	print_summary(model)
@@ -145,7 +146,7 @@ def run_training(model_dir_path: str, model_name: str, epochs_count: int, batch_
 	:param batch_size: Размер партии примеров (для обновления весов).
 	"""
 
-	# Загрузка данных.
+	# Загрузка дампов данных.
 	dataset: ndarray = load_data_dump(f"{model_dir_path}/both.pkl").reshape(-1, 1)
 	train: ndarray = load_data_dump(f"{model_dir_path}/train.pkl")
 	test: ndarray = load_data_dump(f"{model_dir_path}/test.pkl")
@@ -169,7 +170,7 @@ def run_training(model_dir_path: str, model_name: str, epochs_count: int, batch_
 	test_y: ndarray = encode_output(test_y, vocabulary_size)
 
 	# Определение модели.
-	model: Sequential = define_model(vocabulary_size, length, 256)
+	model: Sequential = define_model(model_name, vocabulary_size, length, 256)
 
 	# Обучение модели.
 	train_model(model, (train_x, train_y), (test_x, test_y), epochs_count, batch_size, f"{model_dir_path}/model.h5")
