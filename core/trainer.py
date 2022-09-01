@@ -13,7 +13,6 @@ from keras.utils.layer_utils import print_summary
 from keras_preprocessing.sequence import pad_sequences
 from numpy import array, ndarray
 
-from utils.config import Config
 from utils.data import load_data_dump, create_tokenizer, get_max_length
 
 
@@ -152,10 +151,3 @@ class Trainer:
 
 		# Обучение модели.
 		self.train_model(model, (train_x, train_y), (test_x, test_y), epochs_count, batch_size)
-
-
-if __name__ == "__main__":
-	config: Config = Config("../config.yml")
-	trainer: Trainer = Trainer("../model", "Cortex-Test")
-
-	trainer.run_training(config.get_epochs_count(), config.get_batch_size())

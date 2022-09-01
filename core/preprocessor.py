@@ -8,8 +8,6 @@ from pickle import dump
 from numpy import ndarray, array
 from numpy.random import shuffle
 
-from utils.config import Config
-
 
 class Preprocessor:
 	""" Класс для подготовки нейросети к обучению.
@@ -108,10 +106,3 @@ class Preprocessor:
 
 		# Сохранение данных в pkl-файлы.
 		self.save_pickle_data(reformatted_dataset, train, test)
-
-
-if __name__ == "__main__":
-	config: Config = Config("../config.yml")
-	preprocessor: Preprocessor = Preprocessor("../model", "../data/data.json")
-
-	preprocessor.preprocess_dataset(config.get_dataset_size())

@@ -3,11 +3,11 @@
 
 from flask import jsonify, request, Response, Flask
 
-from core.respond import Responder
-from utils.config import Config
+from core.responder import Responder
+from extra.utils.config import Config
 
-config: Config = Config("../config.yml")
-cortex: Responder = Responder("../model")
+config: Config = Config("config.yml")
+cortex: Responder = Responder("model")
 app: Flask = Flask("cortex-api")
 
 # Конфигурация Flask.
