@@ -11,96 +11,103 @@ from numpy.random import shuffle
 from utils.config import Config
 
 
-def load_json_dataset(path: str) -> ndarray:
-	""" Загружает датасет из JSON-файла в N-мерный массив.
-
-	:param path: Путь к датасету.
-	:return: Датасет в виде N-мерного массива.
+class Preprocessor:
+	""" Класс для подготовки нейросети к обучению.
 	"""
 
-	with open(path, "rb") as json_file:
-		data_list: list = []
-		json_data: any = json.load(json_file)
+	def __init__(self, model_dir_path: str, dataset_path: str, dataset_size: int = 500):
+		""" Инициализирует препроцессор.
 
-		for json_item in json_data:
-			data_list.append([json_item["question"], json_item["answer"]])
+		:param model_dir_path: Путь к директории с моделью.
+		:param dataset_path: Путь к датасету.
+		:param dataset_size: Размер датасета после обрезания (по умолчанию: 500).
+		"""
 
-		return array(data_list)
+		self.model_dir_path: str = model_dir_path
+		self.dataset_path: str = dataset_path
+		self.dataset_size: int = dataset_size
 
+	@staticmethod
+	def save_data_dump(data: ndarray, filename: str) -> None:
+		""" Сохраняет данные в pkl-файл (дамп).
 
-def save_data_dump(data: ndarray, filename: str) -> None:
-	""" Сохраняет данные в pkl-файлы (дамп).
+		:param data: Данные для сохранения (в виде N-мерного массива).
+		:param filename: Имя файла.
+		"""
 
-	:param data: Данные (в виде N-мерного массива) для сохранения.
-	:param filename: Имя файла.
-	"""
+		dump(data, open(filename, "wb"))
 
-	dump(data, open(filename, "wb"))
+		print("Saved: %s" % filename)
 
-	print("Saved: %s" % filename)
+	def load_json_dataset(self) -> ndarray:
+		""" Загружает датасет из JSON-файла в N-мерный массив.
 
+		:return: Датасет в виде N-мерного массива.
+		"""
 
-def save_pickle_data(model_path: str, dataset: ndarray, train: ndarray, test: ndarray) -> None:
-	""" Сохраняет данные в pkl-файлы.
+		with open(self.dataset_path, "rb") as json_file:
+			data_list: list = []
+			json_data: any = json.load(json_file)
 
-	:param model_path: Путь к директории модели.
-	:param dataset: Датасет.
-	:param train: Данные обучения.
-	:param test: Тестовые данные.
-	"""
+			for json_item in json_data:
+				data_list.append([json_item["question"], json_item["answer"]])
 
-	if not os.path.exists(model_path):
-		print("Creating a model directory ...")
+			return array(data_list)
 
-		os.mkdir(model_path)
+	def save_pickle_data(self, dataset: ndarray, train: ndarray, test: ndarray) -> None:
+		""" Сохраняет данные в pkl-файлы.
 
-	save_data_dump(dataset, f"{model_path}/both.pkl")
-	save_data_dump(train, f"{model_path}/train.pkl")
-	save_data_dump(test, f"{model_path}/test.pkl")
+		:param dataset: Датасет.
+		:param train: Данные обучения.
+		:param test: Тестовые данные.
+		"""
 
-	print("All pickle files are saved")
+		if not os.path.exists(self.model_dir_path):
+			print("Creating a model directory ...")
 
+			os.mkdir(self.model_dir_path)
 
-def reformat_dataset(data: ndarray, dataset_size: int) -> ndarray:
-	""" Форматирует и перемешивает данные из датасета.
+		self.save_data_dump(dataset, f"{self.model_dir_path}/both.pkl")
+		self.save_data_dump(train, f"{self.model_dir_path}/train.pkl")
+		self.save_data_dump(test, f"{self.model_dir_path}/test.pkl")
 
-	:param data: Датасет (в виде N-мерного массива)
-	:param dataset_size: Размер датасета.
-	:return: Обрезанный до указанного размера датасет с перемешанными данными.
-	"""
+		print("All pickle files are saved")
 
-	# Обрезание датасета до указанного размера.
-	reduced_dataset: ndarray = data[:dataset_size, :]
+	def reformat_dataset(self, data: ndarray) -> ndarray:
+		""" Форматирует и перемешивает данные из датасета.
 
-	# Перетасовка датасета в случайном порядке.
-	shuffle(reduced_dataset)
+		:param data: Датасет (в виде N-мерного массива)
+		:return: Обрезанный до указанного размера датасет с перемешанными данными.
+		"""
 
-	return reduced_dataset
+		# Обрезание датасета до указанного размера.
+		reduced_dataset: ndarray = data[:self.dataset_size, :]
 
+		# Перетасовка датасета в случайном порядке.
+		shuffle(reduced_dataset)
 
-def preprocess_dataset(model_dir_path: str, dataset_path: str, dataset_size: int) -> None:
-	""" Подготавливает данные из датасета для обучения.
+		return reduced_dataset
 
-	:param model_dir_path: Путь к директории модели.
-	:param dataset_path: Путь к датасету.
-	:param dataset_size: Размер датасета (после обрезания).
-	"""
+	def preprocess_dataset(self) -> None:
+		""" Подготавливает данные из датасета для обучения.
+		"""
 
-	# Загрузка и обрезание датасета.
-	raw_dataset: ndarray = load_json_dataset(dataset_path)
-	reformatted_dataset: ndarray = reformat_dataset(raw_dataset, dataset_size)
+		# Загрузка и обрезание датасета.
+		raw_dataset: ndarray = self.load_json_dataset()
+		reformatted_dataset: ndarray = self.reformat_dataset(raw_dataset)
 
-	# Разделения реформатированного датасета на train / test.
-	train, test = reformatted_dataset[:dataset_size], reformatted_dataset[dataset_size:]
+		# Разделения реформатированного датасета на train / test.
+		train, test = reformatted_dataset[:self.dataset_size], reformatted_dataset[self.dataset_size:]
 
-	# Сохранение данных в pkl-файлы
-	save_pickle_data(model_dir_path, reformatted_dataset, train, test)
+		# Сохранение данных в pkl-файлы.
+		self.save_pickle_data(reformatted_dataset, train, test)
 
 
 if __name__ == "__main__":
-	config = Config("../config.yml")
+	config: Config = Config("../config.yml")
+	preprocessor: Preprocessor = Preprocessor("../model", "../data/data.json", config.get_dataset_size())
 
 	print(f"Running dataset preprocessing ...")
 	print(f"- Dataset size: {config.get_dataset_size()}")
 
-	preprocess_dataset("../model", "../data/data.json", config.get_dataset_size())
+	preprocessor.preprocess_dataset()

@@ -1,10 +1,10 @@
 """ Интерфейс командной строки (CLI).
 """
 
-from core.handler import handle_text
+from core.main import Cortex
 
 if __name__ == "__main__":
-	model_dir_path: str = "../model"
+	cortex: Cortex = Cortex("../model")
 
 	while True:
 		query: str = input(str("> "))
@@ -12,4 +12,4 @@ if __name__ == "__main__":
 		if query == "/exit":
 			break
 
-		print(handle_text(model_dir_path, query))
+		print(cortex.handle_text(query))
