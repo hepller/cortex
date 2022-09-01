@@ -10,8 +10,8 @@ from numpy import ndarray, argmax
 from utils.data import load_data_dump, get_max_length, create_tokenizer
 
 
-class Cortex:
-	""" Класс для обработки запросов и получения ответа.
+class Responder:
+	""" Класс для обработки запросов и получения ответа на запросы.
 	"""
 
 	def __init__(self, model_dir_path: str) -> None:
@@ -79,7 +79,7 @@ class Cortex:
 
 		return y_output
 
-	def handle_text(self, text: str) -> str:
+	def handle_query(self, text: str) -> str:
 		""" Возвращает ответ на входящий текст.
 
 		:param text: Входящий текст.

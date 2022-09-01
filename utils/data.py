@@ -7,6 +7,18 @@ from keras_preprocessing.text import Tokenizer
 from numpy import ndarray
 
 
+def save_data_dump(data: ndarray, filename: str) -> None:
+	""" Сохраняет данные в pkl-файл (дамп).
+
+	:param data: Данные для сохранения (в виде N-мерного массива).
+	:param filename: Имя файла.
+	"""
+
+	dump(data, open(filename, "wb"))
+
+	print("Saved: %s" % filename)
+
+
 def load_data_dump(filename: str) -> ndarray:
 	""" Загружает данные из pkl-файла (дампа).
 
@@ -33,6 +45,7 @@ def create_tokenizer(lines: ndarray, char_level: bool = False) -> Tokenizer:
 
 def get_max_length(lines: ndarray) -> int:
 	""" Получает максимальную длину строки среди линий текста.
+
 	:param lines: Список текста.
 	:return: Максимальная длина строки.
 	"""

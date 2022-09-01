@@ -22,15 +22,21 @@ class Trainer:
 	"""
 
 	def __init__(self, model_dir_path: str, model_name: str):
+		""" Обучает модель нейросеть.
+
+		:param model_dir_path: Путь к директории с моделью.
+		:param model_name: Имя модели.
+		"""
+
 		self.model_dir_path = model_dir_path
 		self.model_name = model_name
 
 	@staticmethod
-	def encode_sequences(tokenizer: Tokenizer, length: int, lines: ndarray) -> ndarray:
+	def encode_sequences(tokenizer: Tokenizer, max_length: int, lines: ndarray) -> ndarray:
 		""" Кодирует и заполняет последовательности.
 
 		:param tokenizer: Токенизатор.
-		:param length: Максимальная длина строки.
+		:param max_length: Максимальная длина строки.
 		:param lines: N-мерный массив строк.
 		:return: Закодированный и заполненный N-мерный массив.
 		"""
@@ -39,7 +45,7 @@ class Trainer:
 		x_input: list = tokenizer.texts_to_sequences(lines)
 
 		# Заполнение последовательностей с нулевым значением.
-		x_input: ndarray = pad_sequences(x_input, maxlen=length, padding="post")
+		x_input: ndarray = pad_sequences(x_input, maxlen=max_length, padding="post")
 
 		return x_input
 
@@ -121,23 +127,23 @@ class Trainer:
 		# Подготовка токенизатора.
 		tokenizer: Tokenizer = create_tokenizer(dataset[:, 0])
 		vocabulary_size: int = len(tokenizer.word_index) + 1
-		length: int = get_max_length(dataset[:, 0])
+		max_length: int = get_max_length(dataset[:, 0])
 
 		print(f"Vocabulary Size: {vocabulary_size}")
-		print(f"Max question length: {length}")
+		print(f"Max question length: {max_length}")
 
 		# Подготовка данных для обучения.
-		train_x: ndarray = self.encode_sequences(tokenizer, length, train[:, 0])
-		train_y: ndarray = self.encode_sequences(tokenizer, length, train[:, 1])
+		train_x: ndarray = self.encode_sequences(tokenizer, max_length, train[:, 0])
+		train_y: ndarray = self.encode_sequences(tokenizer, max_length, train[:, 1])
 		train_y: ndarray = self.encode_output(train_y, vocabulary_size)
 
 		# Подготовка данных для валидации.
-		test_x: ndarray = self.encode_sequences(tokenizer, length, test[:, 0])
-		test_y: ndarray = self.encode_sequences(tokenizer, length, test[:, 1])
+		test_x: ndarray = self.encode_sequences(tokenizer, max_length, test[:, 0])
+		test_y: ndarray = self.encode_sequences(tokenizer, max_length, test[:, 1])
 		test_y: ndarray = self.encode_output(test_y, vocabulary_size)
 
 		# Определение модели.
-		model: Sequential = self.define_model(vocabulary_size, length, 256)
+		model: Sequential = self.define_model(vocabulary_size, max_length, 256)
 
 		# Обучение модели.
 		self.train_model(model, (train_x, train_y), (test_x, test_y), epochs_count, batch_size)
@@ -148,8 +154,8 @@ if __name__ == "__main__":
 	trainer: Trainer = Trainer("../model", "Cortex-Test")
 
 	print("Running model training ...")
-	print(f"- Dataset size: {config.get_dataset_size()}")
-	print(f"- Epochs count: {config.get_epochs_count()}")
-	print(f"- Batch size: {config.get_batch_size()}")
+	print(f" * Dataset size: {config.get_dataset_size()}")
+	print(f" * Epochs count: {config.get_epochs_count()}")
+	print(f" * Batch size: {config.get_batch_size()}")
 
 	trainer.run_training(config.get_epochs_count(), config.get_batch_size())

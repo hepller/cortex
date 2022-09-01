@@ -3,12 +3,12 @@
 
 import json
 import os
-from pickle import dump
 
 from numpy import ndarray, array
 from numpy.random import shuffle
 
 from utils.config import Config
+from utils.data import save_data_dump
 
 
 class Preprocessor:
@@ -26,18 +26,6 @@ class Preprocessor:
 		self.model_dir_path: str = model_dir_path
 		self.dataset_path: str = dataset_path
 		self.dataset_size: int = dataset_size
-
-	@staticmethod
-	def save_data_dump(data: ndarray, filename: str) -> None:
-		""" Сохраняет данные в pkl-файл (дамп).
-
-		:param data: Данные для сохранения (в виде N-мерного массива).
-		:param filename: Имя файла.
-		"""
-
-		dump(data, open(filename, "wb"))
-
-		print("Saved: %s" % filename)
 
 	def load_json_dataset(self) -> ndarray:
 		""" Загружает датасет из JSON-файла в N-мерный массив.
@@ -67,9 +55,9 @@ class Preprocessor:
 
 			os.mkdir(self.model_dir_path)
 
-		self.save_data_dump(dataset, f"{self.model_dir_path}/both.pkl")
-		self.save_data_dump(train, f"{self.model_dir_path}/train.pkl")
-		self.save_data_dump(test, f"{self.model_dir_path}/test.pkl")
+		save_data_dump(dataset, f"{self.model_dir_path}/both.pkl")
+		save_data_dump(train, f"{self.model_dir_path}/train.pkl")
+		save_data_dump(test, f"{self.model_dir_path}/test.pkl")
 
 		print("All pickle files are saved")
 
@@ -108,6 +96,6 @@ if __name__ == "__main__":
 	preprocessor: Preprocessor = Preprocessor("../model", "../data/data.json", config.get_dataset_size())
 
 	print(f"Running dataset preprocessing ...")
-	print(f"- Dataset size: {config.get_dataset_size()}")
+	print(f" * Dataset size: {config.get_dataset_size()}")
 
 	preprocessor.preprocess_dataset()

@@ -3,11 +3,11 @@
 
 from flask import jsonify, request, Response, Flask
 
-from core.main import Cortex
+from core.respond import Responder
 from utils.config import Config
 
 config: Config = Config("../config.yml")
-cortex: Cortex = Cortex("../model")
+cortex: Responder = Responder("../model")
 app: Flask = Flask("cortex-api")
 
 # Конфигурация Flask.
@@ -38,7 +38,7 @@ def api() -> Response:
 	return jsonify({
 		"status": "success",
 		"query": str(request.args["query"]),
-		"output": str(cortex.handle_text(request.args["query"]))
+		"output": str(cortex.handle_query(request.args["query"]))
 	})
 
 

@@ -1,10 +1,12 @@
 """ Интерфейс командной строки (CLI).
 """
 
-from core.main import Cortex
+from core.respond import Responder
 
 if __name__ == "__main__":
-	cortex: Cortex = Cortex("../model")
+	cortex: Responder = Responder("../model")
+
+	print("Running Cortex CLI ...")
 
 	while True:
 		query: str = input(str("> "))
@@ -12,4 +14,4 @@ if __name__ == "__main__":
 		if query == "/exit":
 			break
 
-		print(cortex.handle_text(query))
+		print(cortex.handle_query(query))
