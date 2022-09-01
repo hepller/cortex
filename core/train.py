@@ -112,11 +112,11 @@ class Trainer:
 		model.fit(train_x, train_y, epochs=epochs_count, batch_size=batch_size, validation_data=(test_x, test_y), verbose=1)
 		model.save(f"{self.model_dir_path}/model.h5")
 
-	def run_training(self, epochs_count: int, batch_size: int) -> None:
+	def run_training(self, epochs_count: int = 2000, batch_size: int = 64) -> None:
 		""" Запускает обучение модели для нейросети.
 
-		:param epochs_count: Количество эпох.
-		:param batch_size: Размер партии примеров (для обновления весов).
+		:param epochs_count: Количество эпох (по умолчанию: 2000).
+		:param batch_size: Размер партии примеров для обновления весов (по умолчанию: 64).
 		"""
 
 		# Загрузка дампов данных.
@@ -145,6 +145,11 @@ class Trainer:
 		# Определение модели.
 		model: Sequential = self.define_model(vocabulary_size, max_length, 256)
 
+		print(f"Running model training ({self.model_name}) ...")
+		print(f" * Epochs count: {epochs_count}")
+		print(f" * Batch size: {batch_size}")
+		print("")
+
 		# Обучение модели.
 		self.train_model(model, (train_x, train_y), (test_x, test_y), epochs_count, batch_size)
 
@@ -152,10 +157,5 @@ class Trainer:
 if __name__ == "__main__":
 	config: Config = Config("../config.yml")
 	trainer: Trainer = Trainer("../model", "Cortex-Test")
-
-	print("Running model training ...")
-	print(f" * Dataset size: {config.get_dataset_size()}")
-	print(f" * Epochs count: {config.get_epochs_count()}")
-	print(f" * Batch size: {config.get_batch_size()}")
 
 	trainer.run_training(config.get_epochs_count(), config.get_batch_size())

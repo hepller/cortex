@@ -1,22 +1,10 @@
 """ Вспомогательные функции.
 """
 
-from pickle import dump, load
+from pickle import load
 
 from keras_preprocessing.text import Tokenizer
 from numpy import ndarray
-
-
-def save_data_dump(data: ndarray, filename: str) -> None:
-	""" Сохраняет данные в pkl-файл (дамп).
-
-	:param data: Данные для сохранения (в виде N-мерного массива).
-	:param filename: Имя файла.
-	"""
-
-	dump(data, open(filename, "wb"))
-
-	print("Saved: %s" % filename)
 
 
 def load_data_dump(filename: str) -> ndarray:
