@@ -79,15 +79,15 @@ class Responder:
 
 		return y_output
 
-	def handle_query(self, text: str) -> str:
+	def get_response(self, query_text: str) -> str:
 		""" Возвращает ответ на входящий текст.
 
-		:param text: Входящий текст.
+		:param query_text: Входящий текст.
 		:return: Ответ на входящий текст.
 		"""
 
 		# Обрезка входящего текста.
-		query: list[str] = text.strip().split("\n")
+		query: list[str] = query_text.strip().split("\n")
 
 		# Токенизация входящих данных.
 		x_input: list[str] = self.tokenizer.texts_to_sequences(query)

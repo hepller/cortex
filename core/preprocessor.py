@@ -103,6 +103,7 @@ class Preprocessor:
 		# Разделения реформатированного датасета на train / test.
 		train, test = reformatted_dataset[:dataset_size], reformatted_dataset[dataset_size:]
 
+		print("")
 		print(f"Running dataset preprocessing ...")
 		print(f" * Dataset size: {dataset_size}")
 

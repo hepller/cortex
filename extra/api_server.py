@@ -1,14 +1,15 @@
-""" API для взаимодействия с нейросетью.
+""" API-сервер для взаимодействия с нейросетью.
 """
 
 from flask import jsonify, request, Response, Flask
+from gevent.pywsgi import WSGIServer
 
 from core.responder import Responder
 from extra.utils.config import Config
 
 config: Config = Config("config.yml")
-cortex: Responder = Responder("model")
-app: Flask = Flask("cortex-api")
+responder: Responder = Responder("model")
+app: Flask = Flask("cortex-api-server")
 
 # Конфигурация Flask.
 app.config["JSON_AS_ASCII"] = False
@@ -38,9 +39,10 @@ def api() -> Response:
 	return jsonify({
 		"status": "success",
 		"query": str(request.args["query"]),
-		"output": str(cortex.handle_query(request.args["query"]))
+		"output": str(responder.get_response(request.args["query"]))
 	})
 
 
 if __name__ == "__main__":
-	app.run(host=config.get_api_host(), port=config.get_api_port())
+	http_server = WSGIServer((config.get_api_host(), config.get_api_port()), app)
+	http_server.serve_forever()

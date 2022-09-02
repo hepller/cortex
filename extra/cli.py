@@ -4,7 +4,7 @@
 from core.responder import Responder
 
 if __name__ == "__main__":
-	cortex: Responder = Responder("model")
+	responder: Responder = Responder("model")
 
 	print("Running Cortex CLI ...")
 
@@ -14,4 +14,4 @@ if __name__ == "__main__":
 		if query == "/exit":
 			break
 
-		print(cortex.handle_query(query))
+		print(responder.get_response(query))
