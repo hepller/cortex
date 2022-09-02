@@ -10,7 +10,7 @@ from numpy import ndarray
 def load_data_dump(filename: str) -> ndarray:
 	""" Загружает данные из pkl-файла (дампа).
 
-	:param filename: Имя pkl-файла
+	:param filename: Имя pkl-файла.
 	:return: Данные из дампа (в виде N-мерного массива).
 	"""
 

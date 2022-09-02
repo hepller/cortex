@@ -1,4 +1,4 @@
-""" Подготовка данных для обучения модели.
+""" Компонент для подготовки данных для обучения модели.
 """
 
 import json
@@ -48,7 +48,7 @@ class Preprocessor:
 
 		dump(data, open(filename, "wb"))
 
-		print(f"Saved: \"{filename}\"")
+		print(f" * Saved: \"{filename}\"")
 
 	def save_pickle_data(self, dataset: ndarray, train: ndarray, test: ndarray) -> None:
 		""" Сохраняет данные в pkl-файлы.
@@ -62,6 +62,9 @@ class Preprocessor:
 			print("Creating a model directory ...")
 
 			os.mkdir(self.model_dir_path)
+
+		print("")
+		print("Saving pickle files ...")
 
 		self.save_data_dump(dataset, f"{self.model_dir_path}/both.pkl")
 		self.save_data_dump(train, f"{self.model_dir_path}/train.pkl")
@@ -102,7 +105,6 @@ class Preprocessor:
 
 		print(f"Running dataset preprocessing ...")
 		print(f" * Dataset size: {dataset_size}")
-		print("")
 
 		# Сохранение данных в pkl-файлы.
 		self.save_pickle_data(reformatted_dataset, train, test)
