@@ -13,7 +13,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
 
 from core.responder import Responder
 
-responder: Responder = Responder("model")
+responder: Responder = Responder("../model")
 app: Flask = Flask("cortex-api-server")
 
 # Конфигурация Flask.

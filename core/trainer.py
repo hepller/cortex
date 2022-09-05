@@ -117,7 +117,7 @@ class Trainer:
 
 		# Загрузка существующей модели (при включенном дообучении).
 		if overtrain:
-			self.model = load_model(f"{self.model_dir_path}/model.h5")
+			self.model: Sequential = load_model(f"{self.model_dir_path}/model.h5")
 
 		# Подготавливает модель к обучению.
 		self.model.compile(optimizer=optimizer, loss=loss_function)
