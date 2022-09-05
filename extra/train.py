@@ -1,16 +1,26 @@
 """ Обучение модели нейросети.
 """
-import os.path
+
+import os
+import sys
+from argparse import ArgumentParser, Namespace
+
+# Исправление директории для импорта элементов ядра.
+sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
 
 from core.trainer import Trainer
-from extra.utils.config import Config
 
 if __name__ == "__main__":
-	model_dir_path: str = "model"
+	arg_parser: ArgumentParser = ArgumentParser()
 
-	config: Config = Config("../extra/config.yml")
-	trainer: Trainer = Trainer(model_dir_path, "Cortex-Test")
+	arg_parser.add_argument("-ec", "--epochs-count", type=int, help="Number of epochs (default: 200)", default=200)
+	arg_parser.add_argument("-bs", "--batch-size", type=int, help="Batch size (default: 50)", default=50)
+	arg_parser.add_argument("-o", "--overtrain", type=bool, help="Further training of the existing model (default: False)", default=False)
 
-	overtrain: bool = os.path.exists(f"{model_dir_path}/model.h5")
+	args: Namespace = arg_parser.parse_args()
 
-	trainer.train_model(epochs_count=config.get_epochs_count(), batch_size=config.get_batch_size(), overtrain=overtrain)
+	trainer: Trainer = Trainer("model", "cortex-test")
+
+	# overtrain: bool = os.path.exists("model/model.h5")
+
+	trainer.train_model(epochs_count=args.epochs_count, batch_size=args.batch_size, overtrain=args.overtrain)

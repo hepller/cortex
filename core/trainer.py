@@ -1,5 +1,6 @@
 """ Компонент для обучения модели нейросети.
 """
+
 from keras import losses, optimizers
 from keras.layers import Dense
 from keras.layers import Embedding
@@ -8,11 +9,10 @@ from keras.layers import RepeatVector
 from keras.layers import TimeDistributed
 from keras.losses import CategoricalCrossentropy
 from keras.models import Sequential
+from keras.models import load_model
 from keras.optimizers import Adam
 from keras.preprocessing.text import Tokenizer
-from keras.models import load_model
 from keras.utils import to_categorical
-from keras.utils.layer_utils import print_summary
 from keras_preprocessing.sequence import pad_sequences
 from numpy import array, ndarray
 

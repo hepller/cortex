@@ -1,6 +1,12 @@
 """ Интерфейс командной строки (CLI).
 """
 
+import os
+import sys
+
+# Исправление директории для импорта элементов ядра.
+sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
+
 from core.responder import Responder
 
 if __name__ == "__main__":

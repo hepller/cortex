@@ -31,10 +31,12 @@ class Preprocessor:
 
 		with open(self.dataset_path, "rb") as json_file:
 			data_list: list = []
-			json_data: any = json.load(json_file)
+			json_data: list[dict[str, dict[str]]] = json.load(json_file)
 
 			for json_item in json_data:
-				data_list.append([json_item["question"], json_item["answer"]])
+				# data_list.append([json_item["input"], json_item["output"]])
+				for output_item in json_item["outputs"]:
+					data_list.append([json_item["input"], output_item])
 
 			return array(data_list)
 
