@@ -1,13 +1,7 @@
 """ Подготовка данных для обучения модели.
 """
 
-import os
-import sys
-
 from argparse import ArgumentParser, Namespace
-
-# Исправление директории для импорта элементов ядра.
-sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
 
 from core.preprocessor import Preprocessor
 

@@ -90,7 +90,7 @@ _Для выхода из CLI введите: `/exit`_
 $ cd interfaces
 
 # Запуск API-сервера
-$ python api_server.py
+$ python wsgi.py
 # Аргументы:
 #   --host : Хост (по умолчанию: 0.0.0.0).
 #   --port, -p : Порт (по умолчанию: 5000).
