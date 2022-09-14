@@ -1,24 +1,21 @@
-# Cortex ᵃˡᵖʰᵃ ![Release](https://img.shields.io/github/v/release/hepller/cortex)
+# Cortex <sup>alpha</sup> ![Release](https://img.shields.io/github/v/release/hepller/cortex)
 
 > RNN LTSM нейросеть для имитации общения
-
-![Size](https://img.shields.io/github/repo-size/hepller/cortex)
-![License](https://img.shields.io/github/license/hepller/cortex)
 
 ## Описание
 
 __Cortex__ — Простая нейросеть для имитации диалога по принципу Вопрос/Ответ.
 
 > Написано на Python с использованием библиотек [Keras](https://keras.io/) (+ [TensorFlow](https://www.tensorflow.org/))
-> , [NLTK](https://www.nltk.org/) и [NumPy](https://numpy.org/) _на основе https://github.com/bartosz-paternoga/Chatbot_
+> , [NLTK](https://www.nltk.org/) и [NumPy](https://numpy.org/) на основе https://github.com/bartosz-paternoga/Chatbot
 
 Имеется интерфейс командной строки (CLI) и небольшой API-сервер для интеграции в чат-ботов: [`test/readme.md`](test/readme.md)
 
 ## Зависимости
 
-- Python 3.10 и новее _(Совместимость с более ранними версиями не проверялась)_
+- Python 3.10 и новее *(Совместимость с более ранними версиями не проверялась)*
 
-_Дополнительные зависимости указаны в [`requirements.txt`](requirements.txt)_
+*Дополнительные зависимости указаны в [`requirements.txt`](requirements.txt)*
 
 ```shell
 # Установка зависимостей.
@@ -33,7 +30,7 @@ $ pip install -r requirements.txt
 
 ### Использование препроцессора:
 
-_(подготавливает данные для обучения)_
+*(Подготавливает данные для обучения)*
 
 ```python
 from core.preprocessor import Preprocessor
@@ -48,7 +45,7 @@ preprocessor.preprocess_dataset(dataset_size=200)
 
 ### Использование «тренера»:
 
-_(обучает модель нейросеть)_
+*(Обучает модель нейросеть)*
 
 ```python
 from core.trainer import Trainer
@@ -65,7 +62,7 @@ trainer.train_model(epochs_count=900, batch_size=32, overtrain=False)
 
 ### Использование «ответчика»:
 
-_(обрабатывает запрос и получает ответ)_
+*(Обрабатывает запрос и получает ответ)*
 
 ```python
 from core.responder import Responder
