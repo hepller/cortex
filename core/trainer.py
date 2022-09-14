@@ -36,7 +36,7 @@ class Trainer:
 		# Загрузка дампов данных.
 		self.dataset: ndarray = load_data_dump(f"{self.model_dir_path}/both.pkl").reshape(-1, 1)
 		self.train_data: ndarray = load_data_dump(f"{self.model_dir_path}/train.pkl")
-		self.validation_data: ndarray = load_data_dump(f"{self.model_dir_path}/test.pkl")
+		self.test_data: ndarray = load_data_dump(f"{self.model_dir_path}/test.pkl")
 
 		# Подготовка токенизатора и словаря.
 		self.tokenizer: Tokenizer = create_tokenizer(self.dataset[:, 0])
@@ -51,8 +51,8 @@ class Trainer:
 		self.train_y: ndarray = self.encode_output(self.encode_sequences(self.train_data[:, 1]))
 
 		# Подготовка данных для валидации.
-		self.validate_x: ndarray = self.encode_sequences(self.validation_data[:, 0])
-		self.validate_y: ndarray = self.encode_output(self.encode_sequences(self.validation_data[:, 1]))
+		self.test_x: ndarray = self.encode_sequences(self.test_data[:, 0])
+		self.test_y: ndarray = self.encode_output(self.encode_sequences(self.test_data[:, 1]))
 
 	def encode_sequences(self, lines: ndarray) -> ndarray:
 		""" Кодирует и заполняет последовательности.
@@ -132,5 +132,5 @@ class Trainer:
 		print("")
 
 		# Обучение модели.
-		self.model.fit(self.train_x, self.train_y, epochs=epochs_count, batch_size=batch_size, validation_data=(self.validate_x, self.validate_y), verbose=1)
+		self.model.fit(self.train_x, self.train_y, epochs=epochs_count, batch_size=batch_size, validation_data=(self.test_x, self.test_y), verbose=1)
 		self.model.save(f"{self.model_dir_path}/model.h5")
