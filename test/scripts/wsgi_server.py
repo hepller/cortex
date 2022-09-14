@@ -8,11 +8,11 @@ from gevent.pywsgi import WSGIServer
 
 from core.responder import Responder
 
-responder: Responder = Responder("../model")
 app: Flask = Flask("cortex-api-server")
 
 # Конфигурация Flask.
 app.config["JSON_AS_ASCII"] = False
+app.config["JSONIFY_PRETTYPRINT_REGULAR"] = True
 
 
 @app.route("/api")
@@ -48,8 +48,12 @@ if __name__ == "__main__":
 
 	arg_parser.add_argument("--host", type=str, help="Server host", default="0.0.0.0")
 	arg_parser.add_argument("-p", "--port", type=int, help="Server port", default=5000)
+	arg_parser.add_argument("-md", "--model-dir", type=str, help="The path to the model directory (default: ../model)", default="../model")
 
 	args: Namespace = arg_parser.parse_args()
+
+	# Небольшой костыль.
+	responder: Responder = Responder(args.model_dir)
 
 	http_server: WSGIServer = WSGIServer((args.host, args.port), app)
 	http_server.serve_forever()
