@@ -11,35 +11,35 @@ from core.responder import Responder
 app: Flask = Flask("cortex-api-server")
 
 # Конфигурация Flask.
-app.config["JSON_AS_ASCII"] = False
-app.config["JSONIFY_PRETTYPRINT_REGULAR"] = True
+app.config["JSON_AS_ASCII"] = False # Для корректного отображения кириллицы.
+app.config["JSONIFY_PRETTYPRINT_REGULAR"] = True # Для красивого отображения данных.
 
 
-@app.route("/api")
-def api() -> Response:
+@app.route("/qa")
+def qa_api() -> Response:
 	""" Отвечает на запросы к API.
 
 	:return: Ответ на запрос (flask.Response).
 	"""
 
 	# Проверка на наличие аргумента запроса.
-	if "query" not in request.args:
+	if "question" not in request.args:
 		return jsonify({
 			"status": "error",
-			"error_text": "No query field provided. Please specify an query."
+			"error_text": "No question field provided. Please specify an query."
 		})
 
 	# Проверка на наличие текста в запросе.
-	if request.args["query"] == "":
+	if request.args["question"] == "":
 		return jsonify({
 			"status": "error",
-			"error_text": "No query text provided. Please specify an query text."
+			"error_text": "No question text provided. Please specify an query text."
 		})
 
 	return jsonify({
 		"status": "success",
-		"query": str(request.args["query"]),
-		"output": str(responder.get_response(request.args["query"]))
+		"question": str(request.args["question"]),
+		"answer": str(responder.get_response(request.args["question"]))
 	})
 
 
@@ -52,7 +52,7 @@ if __name__ == "__main__":
 
 	args: Namespace = arg_parser.parse_args()
 
-	# Небольшой костыль.
+	# Небольшой костыль (чтобы путь к модели можно было указать через аргумент).
 	responder: Responder = Responder(args.model_dir)
 
 	http_server: WSGIServer = WSGIServer((args.host, args.port), app)

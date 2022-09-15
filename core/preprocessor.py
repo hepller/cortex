@@ -34,9 +34,9 @@ class Preprocessor:
 			json_data: list[dict[str, dict[str]]] = json.load(json_file)
 
 			for json_item in json_data:
-				# data_list.append([json_item["input"], json_item["output"]])
-				for output_item in json_item["outputs"]:
-					data_list.append([json_item["input"], output_item])
+				# data_list.append([json_item["question"], json_item["answer"]])
+				for output_item in json_item["answers"]:
+					data_list.append([json_item["question"], output_item])
 
 			return array(data_list)
 
