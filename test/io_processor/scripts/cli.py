@@ -1,9 +1,9 @@
-""" Интерфейс командной строки (CLI).
+""" Интерфейс командной строки (CLI) для I/O процессора.
 """
 
 from argparse import ArgumentParser, Namespace
 
-from core.responder import Responder
+from core.io_processor.responder import Responder
 
 if __name__ == "__main__":
 	arg_parser: ArgumentParser = ArgumentParser()

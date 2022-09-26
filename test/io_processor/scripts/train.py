@@ -1,9 +1,9 @@
-""" Обучение модели нейросети.
+""" Обучение модели I/O процессора.
 """
 
 from argparse import ArgumentParser, Namespace
 
-from core.trainer import Trainer
+from core.io_processor.trainer import Trainer
 
 if __name__ == "__main__":
 	arg_parser: ArgumentParser = ArgumentParser()

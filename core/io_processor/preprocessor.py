@@ -1,4 +1,4 @@
-""" Компонент для подготовки данных для обучения модели.
+""" Компонент I/O процессора для подготовки данных для обучения модели.
 """
 
 import json
@@ -35,8 +35,8 @@ class Preprocessor:
 
 			for json_item in json_data:
 				# data_list.append([json_item["question"], json_item["answer"]])
-				for output_item in json_item["answers"]:
-					data_list.append([json_item["question"], output_item])
+				for output_item in json_item["outputs"]:
+					data_list.append([json_item["input"], output_item])
 
 			return array(data_list)
 

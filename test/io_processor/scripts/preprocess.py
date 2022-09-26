@@ -1,9 +1,9 @@
-""" Подготовка данных для обучения модели.
+""" Подготовка данных для обучения модели для I/O процессора.
 """
 
 from argparse import ArgumentParser, Namespace
 
-from core.preprocessor import Preprocessor
+from core.io_processor.preprocessor import Preprocessor
 
 if __name__ == "__main__":
 	arg_parser: ArgumentParser = ArgumentParser()
