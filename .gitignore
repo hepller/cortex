@@ -1,3 +1,4 @@
-test/io_processor/data
-test/io_processor/model
+test/io_processor/data/data.json
+*.pkl
+*.h5
 .idea

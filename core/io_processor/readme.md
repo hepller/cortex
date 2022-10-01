@@ -3,7 +3,9 @@
 > Сделано с использованием библиотек [Keras](https://keras.io/) (+ [TensorFlow](https://www.tensorflow.org/))
 > , [NLTK](https://www.nltk.org/) и [NumPy](https://numpy.org/) на основе https://github.com/bartosz-paternoga/Chatbot
 
-Подходит для имитации диалога типа вопрос-ответ
+## Описание
+
+Может использоватся для имитации диалога типа вопрос-ответ
 
 Использование:
 
@@ -14,6 +16,21 @@
 ## Использование
 
 ### Подготовка данных для обучения
+
+Сбор данных при помощи коллектора датасета:
+
+```python
+# ...
+
+# Укажите токен.
+bot: User = User(token="TOKEN")
+
+# ...
+```
+
+```shell
+$ python dataset_collector.py
+```
 
 Пример элементов датасета:
 

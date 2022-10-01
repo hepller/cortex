@@ -48,7 +48,7 @@ if __name__ == "__main__":
 
 	arg_parser.add_argument("--host", type=str, help="Server host", default="0.0.0.0")
 	arg_parser.add_argument("-p", "--port", type=int, help="Server port", default=5000)
-	arg_parser.add_argument("-iomd", "--io-model-dir", type=str, help="The path to the I/O process model directory (default: ../io_processor/model)", default="../io_processor/model")
+	arg_parser.add_argument("-iopmd", "--iop-model-dir", type=str, help="The path to the I/O process model directory (default: ../io_processor/model)", default="../io_processor/model")
 
 	args: Namespace = arg_parser.parse_args()
 
