@@ -1,4 +1,6 @@
-# Cortex <sup>alpha</sup> ![Release](https://img.shields.io/github/v/release/hepller/cortex)
+# ⚠ Новый репозиторий: https://github.com/TheNodeOrg/cortex
+
+## Cortex <sup>alpha</sup> ![Release](https://img.shields.io/github/v/release/hepller/cortex)
 
 > Комплекс нейросетей для различных задач
 
