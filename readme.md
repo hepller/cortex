@@ -1,4 +1,4 @@
-# ⚠ Новый репозиторий: [TheNodeOrg/cortex](https://github.com/TheNodeOrg/cortex)
+# ⚠ Проект переведён в закрытую разработку
 
 ## Cortex <sup>alpha</sup> ![Release](https://img.shields.io/github/v/release/hepller/cortex)
 
